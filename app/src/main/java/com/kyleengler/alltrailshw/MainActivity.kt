@@ -5,16 +5,21 @@ import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Looper
 import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.*
+import com.google.android.gms.tasks.CancellationToken
 import com.kyleengler.alltrailshw.ui.main.MainFragment
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+    @Inject
+    lateinit var restaurantRepository: RestaurantRepository
     private val TAG = "MainActivity"
-
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private val requestPermissionLauncher =
         registerForActivityResult(
@@ -52,10 +57,19 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("MissingPermission")
     private fun getUserLocation() {
-        fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-            if (location != null) {
-                Log.e(TAG, "Got location $location")
+        val locationRequest = LocationRequest.create().apply {
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+            interval = 5000
+            fastestInterval = 1000
+        }
+        val locationCallback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult?) {
+                locationResult ?: return
+                restaurantRepository.userLocation = locationResult.lastLocation
+                restaurantRepository.searchByLocation()
+                fusedLocationClient.removeLocationUpdates(this)
             }
         }
+        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
     }
 }
