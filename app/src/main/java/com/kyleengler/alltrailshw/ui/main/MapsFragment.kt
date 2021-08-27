@@ -13,7 +13,9 @@ import androidx.fragment.app.Fragment
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
 import com.kyleengler.alltrailshw.R
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -48,8 +50,15 @@ class MapsFragment : Fragment(), GoogleMap.InfoWindowAdapter {
             googleMap.isMyLocationEnabled = true
             googleMap.setInfoWindowAdapter(this)
             viewModel.mapMarkers.observe(viewLifecycleOwner) { markers ->
-                markers.forEach {
-                    googleMap.addMarker(it)
+                markers.forEach { result ->
+                    val marker = MarkerOptions().position(
+                        LatLng(
+                            result.geometry.location.lat,
+                            result.geometry.location.lng
+                        )
+                    )
+                        .title(result.placeId)
+                    googleMap.addMarker(marker)
                 }
             }
         }
@@ -74,9 +83,12 @@ class MapsFragment : Fragment(), GoogleMap.InfoWindowAdapter {
     }
 
     override fun getInfoContents(marker: Marker): View? {
-        return TextView(requireContext()).apply {
-            text = "Here's the marker: ${marker.title}"
-            setTextColor(requireContext().getColor(R.color.purple_700))
-        }
+        val place = viewModel.mapMarkers.value?.find { it.placeId == marker.title }
+        return if (place != null) {
+            TextView(requireContext()).apply {
+                text = "Here's the marker: ${place.name}, ${place.placeId}"
+                setTextColor(requireContext().getColor(R.color.purple_700))
+            }
+        } else null
     }
 }
