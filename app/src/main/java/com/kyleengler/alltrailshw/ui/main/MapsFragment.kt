@@ -20,6 +20,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.kyleengler.alltrailshw.R
 import com.kyleengler.alltrailshw.databinding.PopupViewBinding
 import com.kyleengler.alltrailshw.entity.remote.Result
+import com.kyleengler.alltrailshw.model.RestaurantModel
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.StringWriter
@@ -61,14 +62,11 @@ class MapsFragment : Fragment(), GoogleMap.InfoWindowAdapter {
                 val latLng = LatLng(userLocation.latitude, userLocation.longitude)
                 googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 14f))
             }
-            markers.forEach { result ->
+            markers.forEach { model ->
                 val marker = MarkerOptions().position(
-                    LatLng(
-                        result.geometry.location.lat,
-                        result.geometry.location.lng
-                    )
+                    model.latLng
                 )
-                    .title(result.placeId)
+                    .title(model.placeId)
                 googleMap.addMarker(marker)
             }
         }
@@ -95,44 +93,26 @@ class MapsFragment : Fragment(), GoogleMap.InfoWindowAdapter {
         } else null
     }
 
-    private fun createView(place: Result): View {
+    private fun createView(place: RestaurantModel): View {
         val binding = PopupViewBinding.inflate(LayoutInflater.from(requireContext()))
         binding.name.text = place.name
-        binding.supportText.text = "${formatPriceLevel(place.priceLevel)} · ${place.vicinity}"
-        binding.ratingBar.rating = place.rating?.toFloat() ?: 0f
+        binding.supportText.text = "${place.formatPriceLevel} · ${place.vicinity}"
+        binding.ratingBar.rating = place.rating.toFloat()
         binding.ratingCount.text = "(${place.userRatingsTotal})"
 
-        val pictureId = place.photos?.firstOrNull()?.photoReference
-        if (pictureId != null) {
-            val key = getString(R.string.places_api_key)
-            val url = "https://maps.googleapis.com/maps/api/place/photo?photo_reference=$pictureId&maxwidth=100&key=$key"
+        val key = getString(R.string.places_api_key)
+        val url = place.getPhotoUrl(key)
+        if (url != null) {
             Picasso.get().load(url).into(binding.image)
         }
         return binding.root
     }
 
-    private fun formatPriceLevel(priceLevel: Int?): String {
-        return if (priceLevel != null) {
-            val sb = StringBuilder()
-            for (i in 0..priceLevel) {
-                sb.append("$")
-            }
-            sb.toString()
-        } else ""
-    }
-
-    private fun findPlace(marker: Marker): Result? {
+    private fun findPlace(marker: Marker): RestaurantModel? {
         return viewModel.mapMarkers.value?.find { it.placeId == marker.title }
     }
 
     override fun getInfoContents(marker: Marker): View? {
-//        val place = viewModel.mapMarkers.value?.find { it.placeId == marker.title }
-//        return if (place != null) {
-//            TextView(requireContext()).apply {
-//                text = "Here's the marker: ${place.name}, ${place.placeId}"
-//                setTextColor(requireContext().getColor(R.color.purple_700))
-//            }
-//        } else null
         return null
     }
 }

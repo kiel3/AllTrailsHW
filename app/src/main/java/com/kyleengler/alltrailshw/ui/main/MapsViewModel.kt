@@ -11,6 +11,8 @@ import dagger.hilt.android.scopes.FragmentScoped
 import dagger.hilt.android.scopes.ViewModelScoped
 import javax.inject.Inject
 import com.kyleengler.alltrailshw.entity.remote.Result
+import com.kyleengler.alltrailshw.entity.remote.toModel
+import com.kyleengler.alltrailshw.model.RestaurantModel
 
 @FragmentScoped
 class MapsViewModel
@@ -18,18 +20,17 @@ class MapsViewModel
 constructor(
     private val restaurantRepository: RestaurantRepository
 ){
-    val mapMarkers: LiveData<List<Result>>
+    val mapMarkers: LiveData<List<RestaurantModel>>
     val userLocation: Location?
         get() = restaurantRepository.userLocation
     private val _mapMarkers = MutableLiveData<List<MarkerOptions>>()
 
     init {
         mapMarkers = restaurantRepository.restaurantLiveData
-//            .map { results ->
-//            results.map { result ->
-//                MarkerOptions().position(LatLng(result.geometry.location.lat, result.geometry.location.lng))
-//                    .title(result.placeId)
-//            }
-//        }
+            .map { results ->
+                results.map { result ->
+                    result.toModel()
+                }
+            }
     }
 }
