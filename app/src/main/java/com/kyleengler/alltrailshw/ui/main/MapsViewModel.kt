@@ -1,5 +1,6 @@
 package com.kyleengler.alltrailshw.ui.main
 
+import android.location.Location
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
@@ -18,6 +19,8 @@ constructor(
     private val restaurantRepository: RestaurantRepository
 ){
     val mapMarkers: LiveData<List<Result>>
+    val userLocation: Location?
+        get() = restaurantRepository.userLocation
     private val _mapMarkers = MutableLiveData<List<MarkerOptions>>()
 
     init {
