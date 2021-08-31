@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import com.google.android.gms.location.*
 import com.google.android.gms.tasks.CancellationToken
 import com.kyleengler.alltrailshw.ui.main.MainFragment
+import com.kyleengler.alltrailshw.ui.main.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 

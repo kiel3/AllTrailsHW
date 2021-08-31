@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.kyleengler.alltrailshw.R
 import com.kyleengler.alltrailshw.databinding.MainFragmentBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -12,9 +13,7 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainFragment : Fragment(R.layout.main_fragment) {
-
-    @Inject
-    lateinit var viewModel: MainViewModel
+    private val viewModel: MainViewModel by viewModels()
     private lateinit var mapFragment: MapsFragment
     private lateinit var listFragment: ListFragment
     private val binding
