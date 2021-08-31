@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -19,17 +18,18 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.kyleengler.alltrailshw.R
 import com.kyleengler.alltrailshw.databinding.PopupViewBinding
-import com.kyleengler.alltrailshw.entity.remote.Result
 import com.kyleengler.alltrailshw.model.RestaurantModel
+import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
-import java.io.StringWriter
+import java.lang.Exception
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class MapsFragment : Fragment(), GoogleMap.InfoWindowAdapter {
     @Inject
     lateinit var viewModel: MapsViewModel
+    private val markerSet = mutableMapOf<String, Boolean>()
 
     @SuppressLint("MissingPermission")
     private val callback = OnMapReadyCallback { googleMap ->
@@ -89,21 +89,37 @@ class MapsFragment : Fragment(), GoogleMap.InfoWindowAdapter {
     override fun getInfoWindow(marker: Marker): View? {
         val place = findPlace(marker)
         return if (place != null) {
-            createView(place)
+            createView(place, marker)
         } else null
     }
 
-    private fun createView(place: RestaurantModel): View {
+    private fun createView(place: RestaurantModel, marker: Marker): View {
         val binding = PopupViewBinding.inflate(LayoutInflater.from(requireContext()))
         binding.name.text = place.name
-        binding.supportText.text = "${place.formatPriceLevel} · ${place.vicinity}"
+        val priceLevel = place.formatPriceLevel
+        val type = place.type
+        val supportText = when {
+            priceLevel != null && type != null -> "$priceLevel · $type"
+            priceLevel != null -> priceLevel
+            type != null -> type
+            else -> null
+        }
+        binding.supportText.text = supportText
         binding.ratingBar.rating = place.rating.toFloat()
         binding.ratingCount.text = "(${place.userRatingsTotal})"
 
         val key = getString(R.string.places_api_key)
         val url = place.getPhotoUrl(key)
         if (url != null) {
-            Picasso.get().load(url).into(binding.image)
+            var isImageLoaded = markerSet[marker.id]
+            if (isImageLoaded == true) {
+                Picasso.get().load(url).into(binding.image)
+            } else {
+                isImageLoaded = true
+                markerSet[marker.id] = isImageLoaded
+                Picasso.get().load(url)
+                    .into(binding.image, InfoWindowRefresher(marker))
+            }
         }
         return binding.root
     }
@@ -115,4 +131,13 @@ class MapsFragment : Fragment(), GoogleMap.InfoWindowAdapter {
     override fun getInfoContents(marker: Marker): View? {
         return null
     }
+}
+
+class InfoWindowRefresher(private val markerToRefresh: Marker) :
+    Callback {
+    override fun onSuccess() {
+        markerToRefresh.showInfoWindow()
+    }
+
+    override fun onError(e: Exception?) {}
 }

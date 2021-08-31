@@ -17,7 +17,7 @@ class RestaurantModelTest {
             userRatingsTotal = 0,
             pictureId = null
         )
-        assertEquals("", model.formatPriceLevel)
+        assertEquals(null, model.formatPriceLevel)
         model = model.copy(priceLevel = 1)
         assertEquals("$", model.formatPriceLevel)
         model = model.copy(priceLevel = 2)

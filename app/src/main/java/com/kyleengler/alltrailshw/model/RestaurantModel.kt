@@ -11,16 +11,21 @@ data class RestaurantModel(
     val vicinity: String,
     val rating: Double,
     val userRatingsTotal: Int,
-    val pictureId: String?
+    val pictureId: String?,
+    val type: String?
 ) {
 
-    val formatPriceLevel: String
+    val formatPriceLevel: String?
         get() {
-            val sb = StringBuilder()
-            for (i in 0 until priceLevel) {
-                sb.append("$")
+            return if (priceLevel == 0) {
+                null
+            } else {
+                val sb = StringBuilder()
+                for (i in 0 until priceLevel) {
+                    sb.append("$")
+                }
+                sb.toString()
             }
-            return sb.toString()
         }
     val latLng: LatLng
         get() = LatLng(lat, lng)

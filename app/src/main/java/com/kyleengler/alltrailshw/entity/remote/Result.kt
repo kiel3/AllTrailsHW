@@ -50,5 +50,6 @@ fun Result.toModel(): RestaurantModel = RestaurantModel(
     vicinity = vicinity,
     rating = rating,
     userRatingsTotal = userRatingsTotal,
-    pictureId = photos?.firstOrNull()?.photoReference
+    pictureId = photos?.firstOrNull()?.photoReference,
+    type = types?.firstOrNull()
 )
