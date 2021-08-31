@@ -3,4 +3,5 @@
     <string name="alltrails_at_lunch">AllTrails at Lunch</string>
     <string name="filter">Filter</string>
     <string name="search_hint">Search for a restaurant</string>
+    <string name="restaurant_photo">Restaurant photo</string>
 </resources>

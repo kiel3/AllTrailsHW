@@ -95,7 +95,7 @@ class MapsFragment : Fragment(), GoogleMap.InfoWindowAdapter {
 
     private fun createView(place: RestaurantModel, marker: Marker): View {
         val binding = PopupViewBinding.inflate(LayoutInflater.from(requireContext()))
-        binding.name.text = place.name
+        binding.restaurant.name.text = place.name
         val priceLevel = place.formatPriceLevel
         val type = place.type
         val supportText = when {
@@ -104,21 +104,21 @@ class MapsFragment : Fragment(), GoogleMap.InfoWindowAdapter {
             type != null -> type
             else -> null
         }
-        binding.supportText.text = supportText
-        binding.ratingBar.rating = place.rating.toFloat()
-        binding.ratingCount.text = "(${place.userRatingsTotal})"
+        binding.restaurant.supportText.text = supportText
+        binding.restaurant.ratingBar.rating = place.rating.toFloat()
+        binding.restaurant.ratingCount.text = "(${place.userRatingsTotal})"
 
         val key = getString(R.string.places_api_key)
         val url = place.getPhotoUrl(key)
         if (url != null) {
             var isImageLoaded = markerSet[marker.id]
             if (isImageLoaded == true) {
-                Picasso.get().load(url).into(binding.image)
+                Picasso.get().load(url).into(binding.restaurant.image)
             } else {
                 isImageLoaded = true
                 markerSet[marker.id] = isImageLoaded
                 Picasso.get().load(url)
-                    .into(binding.image, InfoWindowRefresher(marker))
+                    .into(binding.restaurant.image, InfoWindowRefresher(marker))
             }
         }
         return binding.root
