@@ -4,6 +4,7 @@ import android.location.Location
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.kyleengler.alltrailshw.database.FavoriteRestaurantDao
 import com.kyleengler.alltrailshw.places.PlacesApi
 import com.kyleengler.alltrailshw.entity.remote.Result
 import com.kyleengler.alltrailshw.entity.remote.toModel
@@ -17,7 +18,8 @@ import javax.inject.Singleton
 class RestaurantRepository
 @Inject
 constructor(
-    private val placesApi: PlacesApi
+    private val placesApi: PlacesApi,
+    private val favoriteRestaurantDao: FavoriteRestaurantDao
 ) {
     var userLocation: Location? = null
     val restaurantLiveData: LiveData<List<RestaurantModel>?>
@@ -52,4 +54,6 @@ constructor(
             }
         }
     }
+
+    
 }
