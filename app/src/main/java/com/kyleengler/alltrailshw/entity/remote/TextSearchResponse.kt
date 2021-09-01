@@ -40,6 +40,7 @@ fun Candidate.toModel(): RestaurantModel = RestaurantModel(
     rating = rating,
     userRatingsTotal = userRatingsTotal,
     pictureId = photos?.firstOrNull()?.photoReference,
-    type = types?.firstOrNull()
+    type = types?.firstOrNull(),
+    favorite = false
 )
 

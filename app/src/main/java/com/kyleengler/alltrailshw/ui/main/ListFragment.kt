@@ -31,6 +31,7 @@ class ListFragment : Fragment(R.layout.fragment_list) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        restaurantAdapter.onFavoriteClick = viewModel.onFavoriteClick
         binding.list.adapter = restaurantAdapter
         viewModel.mapMarkers.observe(viewLifecycleOwner) { restaurants ->
             if (restaurants != null) {

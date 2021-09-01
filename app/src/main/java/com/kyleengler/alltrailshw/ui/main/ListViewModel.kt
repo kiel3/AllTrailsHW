@@ -14,5 +14,8 @@ class ListViewModel
 constructor(
     private val restaurantRepository: RestaurantRepository
 ) {
+    val onFavoriteClick: ((RestaurantModel) -> Unit) = { restaurantModel ->
+        restaurantRepository.toggleFavorite(restaurantModel)
+    }
     val mapMarkers: LiveData<List<RestaurantModel>?> = restaurantRepository.restaurantLiveData
 }

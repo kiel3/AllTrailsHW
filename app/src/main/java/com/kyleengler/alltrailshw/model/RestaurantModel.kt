@@ -1,6 +1,7 @@
 package com.kyleengler.alltrailshw.model
 
 import com.google.android.gms.maps.model.LatLng
+import com.kyleengler.alltrailshw.entity.local.FavoriteRestaurantEntity
 
 data class RestaurantModel(
     val lat: Double,
@@ -12,7 +13,8 @@ data class RestaurantModel(
     val rating: Double,
     val userRatingsTotal: Int,
     val pictureId: String?,
-    val type: String?
+    val type: String?,
+    var favorite: Boolean
 ) {
 
     val formatPriceLevel: String?
@@ -38,3 +40,7 @@ data class RestaurantModel(
         }
     }
 }
+
+fun RestaurantModel.toFavoriteEntity(): FavoriteRestaurantEntity = FavoriteRestaurantEntity(
+    id = placeId
+)
