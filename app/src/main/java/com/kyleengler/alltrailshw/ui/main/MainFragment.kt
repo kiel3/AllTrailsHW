@@ -11,7 +11,6 @@ import androidx.fragment.app.viewModels
 import com.kyleengler.alltrailshw.R
 import com.kyleengler.alltrailshw.databinding.MainFragmentBinding
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainFragment : Fragment(R.layout.main_fragment) {
@@ -81,7 +80,7 @@ class MainFragment : Fragment(R.layout.main_fragment) {
     }
 
     private fun onScreenStateChange(screenValue: ScreenValue) {
-        when (screenValue)  {
+        when (screenValue) {
             ScreenValue.Map -> goToMap()
             ScreenValue.List -> goToList()
         }
@@ -91,7 +90,8 @@ class MainFragment : Fragment(R.layout.main_fragment) {
         childFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, listFragment, "list")
             .commit()
-        val leftDrawable = AppCompatResources.getDrawable(requireContext(), R.drawable.ic_outline_place_24)
+        val leftDrawable =
+            AppCompatResources.getDrawable(requireContext(), R.drawable.ic_outline_place_24)
         binding.toggleButton.apply {
             setCompoundDrawablesWithIntrinsicBounds(leftDrawable, null, null, null)
             text = getString(R.string.map)
@@ -102,7 +102,10 @@ class MainFragment : Fragment(R.layout.main_fragment) {
         childFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, mapFragment, "map")
             .commit()
-        val leftDrawable = AppCompatResources.getDrawable(requireContext(), R.drawable.ic_baseline_format_list_bulleted_24)
+        val leftDrawable = AppCompatResources.getDrawable(
+            requireContext(),
+            R.drawable.ic_baseline_format_list_bulleted_24
+        )
         binding.toggleButton.apply {
             setCompoundDrawablesWithIntrinsicBounds(leftDrawable, null, null, null)
             text = getString(R.string.list)

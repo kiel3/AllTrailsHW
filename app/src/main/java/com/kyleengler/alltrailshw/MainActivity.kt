@@ -3,16 +3,14 @@ package com.kyleengler.alltrailshw
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Looper
 import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.*
-import com.google.android.gms.tasks.CancellationToken
 import com.kyleengler.alltrailshw.ui.main.MainFragment
-import com.kyleengler.alltrailshw.ui.main.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -43,16 +41,22 @@ class MainActivity : AppCompatActivity() {
                 .commitNow()
         }
 
-        checkLocationPermission()
+        if (savedInstanceState == null) {
+            checkLocationPermission()
+        }
     }
 
     private fun checkLocationPermission() {
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
             getUserLocation()
         } else {
             requestPermissionLauncher.launch(
-                Manifest.permission.ACCESS_FINE_LOCATION)
+                Manifest.permission.ACCESS_FINE_LOCATION
+            )
         }
     }
 
@@ -71,6 +75,10 @@ class MainActivity : AppCompatActivity() {
                 fusedLocationClient.removeLocationUpdates(this)
             }
         }
-        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
+        fusedLocationClient.requestLocationUpdates(
+            locationRequest,
+            locationCallback,
+            Looper.getMainLooper()
+        )
     }
 }

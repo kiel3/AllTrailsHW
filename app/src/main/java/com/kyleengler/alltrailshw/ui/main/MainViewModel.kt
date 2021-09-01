@@ -21,6 +21,13 @@ constructor(
     private val _screenState: MutableLiveData<ScreenValue> =
         MutableLiveData(state["screen"] ?: ScreenValue.Map)
 
+    init {
+        val search = state.get("search") as String?
+        if (!search.isNullOrEmpty()) {
+            restaurantRepository.searchByText(search)
+        }
+    }
+
     fun onScreenToggleClick() {
         val screen = if (_screenState.value == ScreenValue.Map) {
             ScreenValue.List
@@ -32,10 +39,13 @@ constructor(
     }
 
     fun performSearch(text: String) {
+        state.set("search", text)
         restaurantRepository.searchByText(text)
     }
 
     fun clearSearchText() {
+        state.set("search", null)
+//        restaurantRepository.clearSearch()
         restaurantRepository.searchByLocation()
     }
 }
