@@ -9,7 +9,7 @@ data class NearbySearchResponse(
     @SerializedName("next_page_token")
     val nextPageToken: String?,
     @SerializedName("results")
-    val results: List<Result>,
+    val results: List<Result>?,
     @SerializedName("status")
     val status: String?
 )

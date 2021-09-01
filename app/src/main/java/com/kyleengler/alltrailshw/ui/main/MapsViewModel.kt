@@ -20,17 +20,12 @@ class MapsViewModel
 constructor(
     private val restaurantRepository: RestaurantRepository
 ){
-    val mapMarkers: LiveData<List<RestaurantModel>>
+    val mapMarkers: LiveData<List<RestaurantModel>?>
     val userLocation: Location?
         get() = restaurantRepository.userLocation
-    private val _mapMarkers = MutableLiveData<List<MarkerOptions>>()
+    private val _mapMarkers = MutableLiveData<List<MarkerOptions>?>()
 
     init {
         mapMarkers = restaurantRepository.restaurantLiveData
-            .map { results ->
-                results.map { result ->
-                    result.toModel()
-                }
-            }
     }
 }

@@ -42,9 +42,6 @@ class MapsFragment : Fragment(), GoogleMap.InfoWindowAdapter {
          * install it inside the SupportMapFragment. This method will only be triggered once the
          * user has installed Google Play services and returned to the app.
          */
-//        val sydney = LatLng(-34.0, 151.0)
-//        googleMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-//        googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
         if (ActivityCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -57,12 +54,13 @@ class MapsFragment : Fragment(), GoogleMap.InfoWindowAdapter {
             googleMap.setInfoWindowAdapter(this)
         }
         viewModel.mapMarkers.observe(viewLifecycleOwner) { markers ->
+            googleMap.clear()
             val userLocation = viewModel.userLocation
             if (userLocation != null) {
                 val latLng = LatLng(userLocation.latitude, userLocation.longitude)
                 googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 14f))
             }
-            markers.forEach { model ->
+            markers?.forEach { model ->
                 val marker = MarkerOptions().position(
                     model.latLng
                 )

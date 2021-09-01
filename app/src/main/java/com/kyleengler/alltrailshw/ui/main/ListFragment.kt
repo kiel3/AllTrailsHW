@@ -32,8 +32,10 @@ class ListFragment : Fragment(R.layout.fragment_list) {
         super.onViewCreated(view, savedInstanceState)
 
         binding.list.adapter = restaurantAdapter
-        viewModel.mapMarkers.observe(viewLifecycleOwner) {
-            restaurantAdapter.restaurants = it
+        viewModel.mapMarkers.observe(viewLifecycleOwner) { restaurants ->
+            if (restaurants != null) {
+                restaurantAdapter.restaurants = restaurants
+            }
         }
     }
 

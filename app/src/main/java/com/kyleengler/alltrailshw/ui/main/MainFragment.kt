@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -56,6 +57,22 @@ class MainFragment : Fragment(R.layout.main_fragment) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.screenState.observe(viewLifecycleOwner) { onScreenStateChange(it) }
         binding.toggleButton.setOnClickListener { viewModel.onScreenToggleClick() }
+        binding.searchField.setOnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                performSearch(v.text)
+                true
+            } else false
+        }
+        binding.searchLayout.setEndIconOnClickListener {
+            binding.searchField.setText("")
+            viewModel.clearSearchText()
+        }
+    }
+
+    private fun performSearch(text: CharSequence?) {
+        if (text != null) {
+            viewModel.performSearch(text.toString())
+        }
     }
 
     override fun onDestroy() {

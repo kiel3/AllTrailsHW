@@ -14,10 +14,5 @@ class ListViewModel
 constructor(
     private val restaurantRepository: RestaurantRepository
 ) {
-    val mapMarkers: LiveData<List<RestaurantModel>> = restaurantRepository.restaurantLiveData
-        .map { results ->
-            results.map { result ->
-                result.toModel()
-            }
-        }
+    val mapMarkers: LiveData<List<RestaurantModel>?> = restaurantRepository.restaurantLiveData
 }
