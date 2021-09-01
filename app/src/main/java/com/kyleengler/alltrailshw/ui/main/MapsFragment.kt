@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,6 +31,7 @@ class MapsFragment : Fragment(), GoogleMap.InfoWindowAdapter {
     @Inject
     lateinit var viewModel: MapsViewModel
     private val markerSet = mutableMapOf<String, Boolean>()
+    private val TAG = "MapsFragment"
 
     @SuppressLint("MissingPermission")
     private val callback = OnMapReadyCallback { googleMap ->
@@ -37,10 +39,6 @@ class MapsFragment : Fragment(), GoogleMap.InfoWindowAdapter {
          * Manipulates the map once available.
          * This callback is triggered when the map is ready to be used.
          * This is where we can add markers or lines, add listeners or move the camera.
-         * In this case, we just add a marker near Sydney, Australia.
-         * If Google Play services is not installed on the device, the user will be prompted to
-         * install it inside the SupportMapFragment. This method will only be triggered once the
-         * user has installed Google Play services and returned to the app.
          */
         if (ActivityCompat.checkSelfPermission(
                 requireContext(),
@@ -50,9 +48,10 @@ class MapsFragment : Fragment(), GoogleMap.InfoWindowAdapter {
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
         ) {
+            // On first install, sometimes this isn't called because the map is ready before location permission is granted
             googleMap.isMyLocationEnabled = true
-            googleMap.setInfoWindowAdapter(this)
         }
+        googleMap.setInfoWindowAdapter(this)
         viewModel.mapMarkers.observe(viewLifecycleOwner) { markers ->
             googleMap.clear()
             val userLocation = viewModel.userLocation
@@ -133,9 +132,13 @@ class MapsFragment : Fragment(), GoogleMap.InfoWindowAdapter {
 
 class InfoWindowRefresher(private val markerToRefresh: Marker) :
     Callback {
+    private val TAG = "InfoWindowRefresher"
     override fun onSuccess() {
+        Log.e(TAG, "InfoWindowRefresher success!")
         markerToRefresh.showInfoWindow()
     }
 
-    override fun onError(e: Exception?) {}
+    override fun onError(e: Exception?) {
+        Log.e(TAG, "InfoWindowRefresher error", e)
+    }
 }

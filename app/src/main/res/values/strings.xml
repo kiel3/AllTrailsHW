@@ -6,4 +6,5 @@
     <string name="restaurant_photo">Restaurant photo</string>
     <string name="list">List</string>
     <string name="map">Map</string>
+    <string name="favorite_button">Favorite button</string>
 </resources>
