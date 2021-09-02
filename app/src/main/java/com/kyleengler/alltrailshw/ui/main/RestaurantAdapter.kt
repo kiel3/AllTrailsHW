@@ -53,6 +53,9 @@ class RestaurantAdapter : RecyclerView.Adapter<RestaurantAdapter.ViewHolder>() {
             val url = restaurant.getPhotoUrl(key)
             if (url != null) {
                 Picasso.get().load(url).into(binding.restaurant.image)
+            } else {
+                val drawable = AppCompatResources.getDrawable(context, R.drawable.ic_baseline_restaurant_24)
+                binding.restaurant.image.setImageDrawable(drawable)
             }
             binding.restaurant.favoriteButton.visibility = View.VISIBLE
             val drawable = if (restaurant.favorite) {

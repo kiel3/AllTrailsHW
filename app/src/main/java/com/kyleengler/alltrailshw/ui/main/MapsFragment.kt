@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -109,13 +110,21 @@ class MapsFragment : Fragment(), GoogleMap.InfoWindowAdapter {
         if (url != null) {
             var isImageLoaded = markerSet[marker.id]
             if (isImageLoaded == true) {
-                Picasso.get().load(url).into(binding.restaurant.image)
+                Picasso.get()
+                    .load(url)
+                    .error(R.drawable.ic_baseline_restaurant_24)
+                    .into(binding.restaurant.image)
             } else {
                 isImageLoaded = true
                 markerSet[marker.id] = isImageLoaded
-                Picasso.get().load(url)
+                Picasso.get()
+                    .load(url)
+                    .error(R.drawable.ic_baseline_restaurant_24)
                     .into(binding.restaurant.image, InfoWindowRefresher(marker))
             }
+        } else {
+            val drawable = AppCompatResources.getDrawable(requireContext(), R.drawable.ic_baseline_restaurant_24)
+            binding.restaurant.image.setImageDrawable(drawable)
         }
         return binding.root
     }
