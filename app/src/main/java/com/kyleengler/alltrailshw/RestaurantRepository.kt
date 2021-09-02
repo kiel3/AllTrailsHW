@@ -5,13 +5,13 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.kyleengler.alltrailshw.database.FavoriteRestaurantDao
-import com.kyleengler.alltrailshw.places.PlacesApi
-import com.kyleengler.alltrailshw.entity.remote.Result
 import com.kyleengler.alltrailshw.entity.remote.toModel
 import com.kyleengler.alltrailshw.model.RestaurantModel
 import com.kyleengler.alltrailshw.model.toFavoriteEntity
-import kotlinx.coroutines.*
-import java.lang.Exception
+import com.kyleengler.alltrailshw.places.PlacesApi
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -37,7 +37,8 @@ constructor(
                 val models = response.results?.map { it.toModel() }
                 val favorites = favoriteRestaurantDao.getAll()
                 val restaurants = models?.map { restaurantModel ->
-                    restaurantModel.favorite = favorites.find { it.id == restaurantModel.placeId } != null
+                    restaurantModel.favorite =
+                        favorites.find { it.id == restaurantModel.placeId } != null
                     restaurantModel
                 }
                 _restaurantLiveData.postValue(restaurants)
@@ -55,7 +56,8 @@ constructor(
                 val models = response.candidates?.map { it.toModel() }
                 val favorites = favoriteRestaurantDao.getAll()
                 val restaurants = models?.map { restaurantModel ->
-                    restaurantModel.favorite = favorites.find { it.id == restaurantModel.placeId } != null
+                    restaurantModel.favorite =
+                        favorites.find { it.id == restaurantModel.placeId } != null
                     restaurantModel
                 }
                 _restaurantLiveData.postValue(restaurants)
@@ -78,7 +80,8 @@ constructor(
         scope.launch {
             val favorites = favoriteRestaurantDao.getAll()
             val restaurants = _restaurantLiveData.value?.map { restaurantModel ->
-                restaurantModel.favorite = favorites.find { it.id == restaurantModel.placeId } != null
+                restaurantModel.favorite =
+                    favorites.find { it.id == restaurantModel.placeId } != null
                 restaurantModel
             }
             _restaurantLiveData.postValue(restaurants)

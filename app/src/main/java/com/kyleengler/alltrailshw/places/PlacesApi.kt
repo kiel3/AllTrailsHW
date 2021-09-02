@@ -4,7 +4,6 @@ import com.kyleengler.alltrailshw.entity.remote.NearbySearchResponse
 import com.kyleengler.alltrailshw.entity.remote.TextSearchResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
-import retrofit2.http.QueryMap
 
 interface PlacesApi {
     @GET("nearbysearch/json?type=restaurant&radius=1500")

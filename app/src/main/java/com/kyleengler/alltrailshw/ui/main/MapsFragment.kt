@@ -31,7 +31,6 @@ class MapsFragment : Fragment(), GoogleMap.InfoWindowAdapter {
     @Inject
     lateinit var viewModel: MapsViewModel
     private val markerSet = mutableMapOf<String, Boolean>()
-    private val TAG = "MapsFragment"
 
     @SuppressLint("MissingPermission")
     private val callback = OnMapReadyCallback { googleMap ->
