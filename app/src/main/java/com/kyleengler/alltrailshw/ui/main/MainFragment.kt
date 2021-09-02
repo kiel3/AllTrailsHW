@@ -1,10 +1,12 @@
 package com.kyleengler.alltrailshw.ui.main
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -58,8 +60,14 @@ class MainFragment : Fragment(R.layout.main_fragment) {
         binding.toggleButton.setOnClickListener { viewModel.onScreenToggleClick() }
         binding.searchField.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                performSearch(v.text)
-                true
+                val imm: InputMethodManager =
+                    v.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(v.windowToken, 0)
+                val searchTerm = v.text
+                if (!searchTerm.isNullOrEmpty()) {
+                    performSearch(searchTerm)
+                }
+                false
             } else false
         }
         binding.searchLayout.setEndIconOnClickListener {
